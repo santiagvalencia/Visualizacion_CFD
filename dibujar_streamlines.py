@@ -3,6 +3,8 @@ import time
 import vtk
 import pyvista as pv
 
+#hi pepino
+
 pv.set_plot_theme("document")
 geometria = pv.PolyData('cylinder.stl')
 t0 = time.time()
