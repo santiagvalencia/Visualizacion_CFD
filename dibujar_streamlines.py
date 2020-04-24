@@ -6,12 +6,12 @@ import pyvista as pv
 #hi pepino
 
 pv.set_plot_theme("document")
-geometria = pv.PolyData('../Visualización/cylinder.stl')
+geometria = pv.PolyData('cylinder.stl')
 t0 = time.time()
-grid = pv.read('internal.vtu')
+grid = pv.read('internal.vtu') # foamToVTK
 print('> VTK file read in '+str(time.time()-t0)+' seconds')
 
-def lineas_verticales(x, z, y_sup, puntos_por_linea):
+def lineas_verticales(x, z, y_sup, puntos_por_linea, y_inf = 0.000001):
     print('> '+str(x.size*z.size*puntos_por_linea)+' lines to be drawn')
     mesh = pv.PolyData()
     c = 0
@@ -20,12 +20,12 @@ def lineas_verticales(x, z, y_sup, puntos_por_linea):
         for z0 in z:
             t0 = time.time()
             c+=1
-            pa = (x0, 0.000001, z0)
+            pa = (x0, y_inf, z0)
             pb = (x0, y_sup, z0)
             streamlines = grid.streamlines(vectors = 'U', n_points = puntos_por_linea,
             integrator_type = 45, initial_step_length = 0.0001, step_unit = 'l',
             max_steps = 10000, max_error = 1e-10, terminal_speed=1e-18, pointa = pa, pointb = pb,
-            min_step_length=0.000001, max_step_length=0.01, interpolator_type = 'point')
+            min_step_length=0.000001, max_step_length=0.01, interpolator_type = 'point', integration_direction = 'forward')
             mesh = mesh + streamlines
             print('> '+str(c*puntos_por_linea)+' lines done, last '+str(puntos_por_linea)+' done in '+str(np.around(time.time()-t0, decimals = 2))+' seconds')
     print('> '+str(x.size*z.size*puntos_por_linea)+' lines done in '+str(np.around(time.time()-t_inicial, decimals = 2))+' seconds')
@@ -39,18 +39,20 @@ def punto(centro):
 
     return streamlines
 
-x = np.linspace(-0.076, -0.15, 3)
-z = np.array([0])#np.array([-0.0002, -0.0001, 0, 0.0001, 0.0002])#np.linspace(-0.02, 0.02, 5)
-puntos_por_linea = 4
-y_sup = 0.005
+# x = np.linspace(-0.076, -0.15, 3)
+# z = np.array([0])#np.array([-0.0002, -0.0001, 0, 0.0001, 0.0002])#np.linspace(-0.02, 0.02, 5)
+# puntos_por_linea = 10
+# y_sup = 0.005
 
 linea = punto((-0.11, 0.006, 0))
 # list = dir(linea)
 # for l in list:
 #     print(l)
-#mesh = lineas_verticales(x, z, y_sup, puntos_por_linea)
+# mesh = lineas_verticales(x, z, y_sup, puntos_por_linea)
+# y_sup = 0.55
+# mesh2 = lineas_verticales(x, z, y_sup, puntos_por_linea, y_inf = 0.4)
 vort = linea['vorticity']
-# vel = linea['U']
+vel = linea['U']
 points = linea.points
 #
 # vorticidad = pv.PolyData(points)
@@ -60,15 +62,17 @@ points = linea.points
 # linea
 #linea.set_active_vectors('vorticity')
 #print(linea._active_vectors_info)
-glyphs = linea.glyph(orient = True, scale = True, geom = pv.Arrow(), factor = 1)
+#glyphs = linea.glyph(orient = True, scale = True, geom = pv.Arrow(), factor = 1)
 #
 plotter = pv.Plotter()
 plotter.add_arrows(points[::5], vort[::5], mag = 0.01)
-# #plotter.add_arrows(points[::5], vel[::5], mag = 10, color = 'black')
-# # #plotter.add_mesh(mesh, color = 'gray')
+plotter.add_arrows(points[::5], vel[::5], mag = 10)
+# plotter.add_mesh(mesh, scalars = 'U')
+# plotter.add_mesh(mesh2, scalars = 'U')
+plotter.add_points(points)
 plotter.add_mesh(geometria)
 # # #plotter.add_mesh(linea.tube(radius = 0.001), scalars = 'vorticity')
 # plotter.add_mesh(glyphs)
-# # plotter.add_axes()
-# # plotter.show_grid(color = 'gray')
+plotter.add_axes()
+plotter.show_grid(color = 'gray')
 plotter.show()
