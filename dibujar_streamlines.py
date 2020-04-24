@@ -6,7 +6,7 @@ import pyvista as pv
 #hi pepino
 
 pv.set_plot_theme("document")
-geometria = pv.PolyData('cylinder.stl')
+geometria = pv.PolyData('../Visualización/cylinder.stl')
 t0 = time.time()
 grid = pv.read('internal.vtu')
 print('> VTK file read in '+str(time.time()-t0)+' seconds')
@@ -45,30 +45,30 @@ puntos_por_linea = 4
 y_sup = 0.005
 
 linea = punto((-0.11, 0.006, 0))
-list = dir(linea)
-for l in list:
-    print(l)
+# list = dir(linea)
+# for l in list:
+#     print(l)
 #mesh = lineas_verticales(x, z, y_sup, puntos_por_linea)
-# vort = linea['vorticity']
+vort = linea['vorticity']
 # vel = linea['U']
-# points = linea.points
+points = linea.points
 #
 # vorticidad = pv.PolyData(points)
 # vorticidad.vectors = vort
 #
-linea.set_active_scalars('vorticity')
+# linea.set_active_scalars('vorticity')
 # linea
 #linea.set_active_vectors('vorticity')
 #print(linea._active_vectors_info)
-# glyphs = linea.glyph(orient = True, scale = True, geom = pv.Arrow(), factor = 1)
+glyphs = linea.glyph(orient = True, scale = True, geom = pv.Arrow(), factor = 1)
 #
-# plotter = pv.Plotter()
-# #plotter.add_arrows(points[::5], vort[::5], mag = 0.01, color = 'blue')
+plotter = pv.Plotter()
+plotter.add_arrows(points[::5], vort[::5], mag = 0.01)
 # #plotter.add_arrows(points[::5], vel[::5], mag = 10, color = 'black')
 # # #plotter.add_mesh(mesh, color = 'gray')
-# plotter.add_mesh(geometria)
+plotter.add_mesh(geometria)
 # # #plotter.add_mesh(linea.tube(radius = 0.001), scalars = 'vorticity')
 # plotter.add_mesh(glyphs)
 # # plotter.add_axes()
 # # plotter.show_grid(color = 'gray')
-# plotter.show()
+plotter.show()
