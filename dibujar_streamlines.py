@@ -39,18 +39,24 @@ def punto(centro):
 
     return streamlines
 
-# x = np.linspace(-0.076, -0.15, 3)
-# z = np.array([0])#np.array([-0.0002, -0.0001, 0, 0.0001, 0.0002])#np.linspace(-0.02, 0.02, 5)
-# puntos_por_linea = 10
-# y_sup = 0.005
+x = np.linspace(-0.076, -0.15, 3)
+z = np.array([-0.0002, -0.0001, 0, 0.0001, 0.0002])#np.array([0])##np.linspace(-0.02, 0.02, 5)
+puntos_por_linea = 10
+y_sup = 0.005
+
+mesh = lineas_verticales(x, z, y_sup, puntos_por_linea)
+
+y_sup = 0.92
+x=np.linspace(-0.01, 0.01, 4)
+z = np.linspace(-0.09,-0.03, 10)
 
 linea = punto((-0.11, 0.006, 0))
 # list = dir(linea)
 # for l in list:
 #     print(l)
-# mesh = lineas_verticales(x, z, y_sup, puntos_por_linea)
+
 # y_sup = 0.55
-# mesh2 = lineas_verticales(x, z, y_sup, puntos_por_linea, y_inf = 0.4)
+mesh2 = lineas_verticales(x, z, y_sup, puntos_por_linea, y_inf = 0.88)
 vort = linea['vorticity']
 vel = linea['U']
 points = linea.points
@@ -65,11 +71,11 @@ points = linea.points
 #glyphs = linea.glyph(orient = True, scale = True, geom = pv.Arrow(), factor = 1)
 #
 plotter = pv.Plotter()
-plotter.add_arrows(points[::5], vort[::5], mag = 0.01)
-plotter.add_arrows(points[::5], vel[::5], mag = 10)
-# plotter.add_mesh(mesh, scalars = 'U')
-# plotter.add_mesh(mesh2, scalars = 'U')
-plotter.add_points(points)
+# plotter.add_arrows(points[::5], vort[::5], mag = 0.01)
+# plotter.add_arrows(points[::5], vel[::5], mag = 10)
+plotter.add_mesh(mesh, scalars = 'U')
+plotter.add_mesh(mesh2, scalars = 'U')
+#plotter.add_points(points)
 plotter.add_mesh(geometria)
 # # #plotter.add_mesh(linea.tube(radius = 0.001), scalars = 'vorticity')
 # plotter.add_mesh(glyphs)
